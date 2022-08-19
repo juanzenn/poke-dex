@@ -15,7 +15,7 @@ const PokemonPage: JSXElementConstructor<PokemonPageProps> = () => {
   ]);
 
   console.log(currentPokemon);
-
+  // 905 Pokémon
   return (
     <div className="flex flex-col w-3/4 h-3/4 gap-4">
       <Head>

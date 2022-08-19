@@ -1,4 +1,5 @@
 // src/pages/_app.tsx
+import { MantineProvider } from "@mantine/core";
 import { withTRPC } from "@trpc/next";
 import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
@@ -7,9 +8,17 @@ import "../styles/globals.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
-      <Component {...pageProps} />
-    </div>
+    <MantineProvider
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{
+        colorScheme: "dark",
+      }}
+    >
+      <div className="w-screen h-screen flex justify-center items-center">
+        <Component {...pageProps} />
+      </div>
+    </MantineProvider>
   );
 };
 
@@ -39,5 +48,5 @@ export default withTRPC<AppRouter>({
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: false,
+  ssr: true,
 })(MyApp);
