@@ -1,24 +1,35 @@
+import { appRouter } from "@/server/router";
+import { createContext } from "@/server/router/context";
+import { trpc } from "@/utils/trpc";
 import { Button } from "@mantine/core";
-import type { NextPage } from "next";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { JSXElementConstructor, useState } from "react";
-import { trpc } from "../utils/trpc";
+import { useState } from "react";
+import superjson from "superjson";
+import PokemonCard from "./index/PokemonCard";
 
 const Home: NextPage = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const router = useRouter();
+  const initialPage = router.query?.page ? Number(router.query?.page) : 1;
+
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const { data, isLoading } = trpc.useQuery([
     "pokemon.get-group",
     { page: currentPage },
   ]);
 
   const onPreviousPage = () => {
-    setCurrentPage(currentPage - 1);
+    const value = currentPage - 1;
+    router.replace(".", { query: { page: value } }, { shallow: true });
+    setCurrentPage(value);
   };
 
   const onNextPage = () => {
-    setCurrentPage(currentPage + 1);
+    const value = currentPage + 1;
+    router.replace(".", { query: { page: value } }, { shallow: true });
+    setCurrentPage(value);
   };
 
   return (
@@ -50,14 +61,15 @@ const Home: NextPage = () => {
         <div className="flex justify-center items-baseline gap-4">
           <Button
             onClick={onPreviousPage}
-            disabled={isLoading || currentPage === 1}
+            disabled={currentPage === 1}
+            variant="filled"
           >
             Previous page
           </Button>
 
           <p className="text-white">{currentPage}</p>
 
-          <Button onClick={onNextPage} disabled={isLoading}>
+          <Button onClick={onNextPage} variant="filled">
             Next page
           </Button>
         </div>
@@ -66,37 +78,21 @@ const Home: NextPage = () => {
   );
 };
 
-type PokemonCardProps = {
-  id: number;
-  name: string;
-  image: string;
-};
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: await createContext(),
+    transformer: superjson,
+  });
 
-const pokemonCardClass =
-  "p-4 rounded-md shadow text-center bg-slate-600 text-white cursor-pointer hover:bg-slate-500 hover:-translate-y-1 transition-all";
+  const initialPage = context.query?.page ? Number(context.query?.page) : 1;
+  await ssg.prefetchQuery("pokemon.get-group", { page: initialPage });
 
-const PokemonCard: JSXElementConstructor<PokemonCardProps> = ({
-  id,
-  name,
-  image,
-}) => {
-  const router = useRouter();
-
-  return (
-    <div
-      className={pokemonCardClass}
-      onClick={() => router.push(`/pokemon/${id}`)}
-    >
-      <strong className="capitalize block">{name}</strong>
-      <Image
-        className="block"
-        src={image}
-        alt={`sprite for ${name}`}
-        width={96}
-        height={96}
-      />
-    </div>
-  );
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
 };
 
 export default Home;

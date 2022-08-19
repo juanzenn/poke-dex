@@ -1,10 +1,7 @@
 // src/utils/trpc.ts
 import { createReactQueryHooks } from "@trpc/react";
-import { createSSGHelpers } from "@trpc/react/ssg";
 import type { inferProcedureInput, inferProcedureOutput } from "@trpc/server";
-import superjson from "superjson";
-import { appRouter, AppRouter } from "../server/router";
-import { createContext } from "../server/router/context";
+import { AppRouter } from "../server/router";
 
 export const trpc = createReactQueryHooks<AppRouter>();
 

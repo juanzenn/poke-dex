@@ -1,3 +1,4 @@
+import { Button } from "@mantine/core";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { JSXElementConstructor } from "react";
@@ -22,12 +23,9 @@ const PokemonPage: JSXElementConstructor<PokemonPageProps> = () => {
         <title>{currentPokemon?.name.toUpperCase()}</title>
       </Head>
 
-      <button
-        className="w-fit bg-slate-500 text-white px-6 py-2 rounded-md cursor-pointer hover:text-black hover:bg-teal-300 focus:ring focus:ring-teal-100 transition-colors font-semibold shadow-sm"
-        onClick={() => router.back()}
-      >
+      <Button onClick={() => router.back()} className="w-fit">
         Go back
-      </button>
+      </Button>
       <article className="bg-slate-500 rounded-md shadow-xl flex-1">
         {/* todo: add the pokemon information:
           sprites (in a carousel)
