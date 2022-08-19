@@ -2,7 +2,7 @@
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 
-type CreateContextOptions = {};
+type CreateContextOptions = unknown;
 
 /** Use this helper for:
  * - testing, where we dont have to Mock Next.js' req/res
@@ -17,7 +17,7 @@ export const createContextInner = async (opts: CreateContextOptions) => {
  * @link https://trpc.io/docs/context
  **/
 export const createContext = async (
-  opts: trpcNext.CreateNextContextOptions,
+  opts: trpcNext.CreateNextContextOptions
 ) => {
   return await createContextInner({});
 };
