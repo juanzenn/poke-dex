@@ -13,6 +13,8 @@ export const pokemonRouter = createRouter()
       const pokemonsId: number[] = [];
 
       for (let i = 24 * page - 23; i <= 24 * page; i++) {
+        if (i > 898) continue;
+
         pokemonsId.push(i);
       }
 

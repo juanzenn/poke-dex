@@ -12,9 +12,9 @@ import PokemonCard from "./index/PokemonCard";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const initialPage = router.query?.page ? Number(router.query?.page) : 1;
-
-  const [currentPage, setCurrentPage] = useState<number>(initialPage);
+  const getPage = (): number =>
+    router.query?.page ? Number(router.query.page) : 1;
+  const [currentPage, setCurrentPage] = useState<number>(getPage);
   const { data, isLoading } = trpc.useQuery([
     "pokemon.get-group",
     { page: currentPage },
@@ -22,13 +22,25 @@ const Home: NextPage = () => {
 
   const onPreviousPage = () => {
     const value = currentPage - 1;
-    router.replace(".", { query: { page: value } }, { shallow: true });
+    router.replace(
+      { href: "/", query: { page: value } },
+      { href: "/", query: undefined },
+      {
+        shallow: true,
+      }
+    );
     setCurrentPage(value);
   };
 
   const onNextPage = () => {
     const value = currentPage + 1;
-    router.replace(".", { query: { page: value } }, { shallow: true });
+    router.replace(
+      { href: "/", query: { page: value } },
+      { href: "/", query: undefined },
+      {
+        shallow: true,
+      }
+    );
     setCurrentPage(value);
   };
 
@@ -69,7 +81,11 @@ const Home: NextPage = () => {
 
           <p className="text-white">{currentPage}</p>
 
-          <Button onClick={onNextPage} variant="filled">
+          <Button
+            onClick={onNextPage}
+            disabled={currentPage === 38}
+            variant="filled"
+          >
             Next page
           </Button>
         </div>

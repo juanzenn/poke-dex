@@ -15,7 +15,10 @@ const PokemonPage: JSXElementConstructor<PokemonPageProps> = () => {
     { id: +(id || 1) },
   ]);
 
-  console.log(currentPokemon);
+  const handleGoBack = () => {
+    router.back();
+  };
+
   // 905 Pokémon
   return (
     <div className="flex flex-col w-3/4 h-3/4 gap-4">
@@ -23,7 +26,7 @@ const PokemonPage: JSXElementConstructor<PokemonPageProps> = () => {
         <title>{currentPokemon?.name.toUpperCase()}</title>
       </Head>
 
-      <Button onClick={() => router.back()} className="w-fit">
+      <Button onClick={handleGoBack} className="w-fit">
         Go back
       </Button>
       <article className="bg-slate-500 rounded-md shadow-xl flex-1">
